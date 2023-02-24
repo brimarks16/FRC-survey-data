@@ -3,6 +3,8 @@
 library(readr)
 library(dplyr)
 library(tidyr)
+library(ggplot2)
+library(latex2exp)
 
 x <- read_csv("frc.csv", skip = 1)
 
@@ -50,4 +52,16 @@ for (i in 1:nrow(y)) {
           }
      }
 }
+
+z <- data.frame(see,interact)
+
+ggplot(z) +
+     geom_violin(aes(factor(see),interact)) +
+     xlab(TeX('How often do you see free-roaming cats in your neighborhood? $(month^{-1})$')) +
+     ylab(TeX('How often do you intentionally interact with free-roaming cats in your neighborhood? $(month^{-1})$')) +
+     theme(panel.background = element_rect(fill = "white", colour = "black")) +
+     theme(aspect.ratio = 1) +
+     theme(axis.text = element_text(face = "plain", size = 12))
+
+# It appears that the population that actually plays with FRC is small, but there may be some other factor when we look at the rest of the data.
 
