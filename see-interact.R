@@ -58,7 +58,8 @@ z <- data.frame(see,interact)
 ggplot(z) +
      geom_violin(aes(factor(see),interact)) +
      xlab(TeX('How often do you see free-roaming cats in your neighborhood? $(month^{-1})$')) +
-     ylab(TeX('How often do you intentionally interact with free-roaming cats in your neighborhood? $(month^{-1})$')) +
+     ylab(TeX('How often do you intentionally interact with free-roaming cats? $(month^{-1})$')) +
+     label
      theme(panel.background = element_rect(fill = "white", colour = "black")) +
      theme(aspect.ratio = 1) +
      theme(axis.text = element_text(face = "plain", size = 12))
