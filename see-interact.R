@@ -9,8 +9,8 @@ library(latex2exp)
 x <- read_csv("frc.csv", skip = 1)
 
 y <- x %>%
-     select(`How often do you see free-roaming cats in your neighborhood?`, `How often do you intentionally interact with free-roaming cats?`) %>%
-     rename(see=`How often do you see free-roaming cats in your neighborhood?`, interact=`How often do you intentionally interact with free-roaming cats?`)
+     select(`How often do you see free-roaming cats in your neighborhood?`, `How often do you intentionally interact with free-roaming cats?`, `Do you rent or own your home?`) %>%
+     rename(see=`How often do you see free-roaming cats in your neighborhood?`, interact=`How often do you intentionally interact with free-roaming cats?`, own=`Do you rent or own your home?`)
 
 see <- array(NA, dim = nrow(y))
 for (i in 1:nrow(y)) {
@@ -53,7 +53,23 @@ for (i in 1:nrow(y)) {
      }
 }
 
-z <- data.frame(see,interact)
+own <- array(NA, dim = nrow(y))
+for (i in 1:nrow(y)) {
+     if (is.na(y$own[i])) {
+          own[i] <- NA
+     } else {
+          if (y$own[i] == "Rent") {
+               own[i] <- -1 # times per month
+          } else if (y$own[i] == "Own/mortgage") {
+               own[i] <- 1
+          } else {
+               own[i] <- NA
+          }
+     }
+}
+
+rm(interact,see,own)
+z <- data.frame(see,interact,own)
 
 ggplot(z) +
      geom_violin(aes(factor(see),interact)) +
@@ -64,4 +80,17 @@ ggplot(z) +
      theme(axis.text = element_text(face = "plain", size = 12))
 
 # It appears that the population that actually plays with FRC is small, but there may be some other factor when we look at the rest of the data.
+
+own <- filter(z, own==1)
+rent <- filter(z, own ==-1)
+
+m <- lm(interact ~ see, data = z)
+m1 <- lm(interact ~ see, data = own)
+m2 <- lm(interact ~ see, data = rent)
+
+
+
+
+
+
 
